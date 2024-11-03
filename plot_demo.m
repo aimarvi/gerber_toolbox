@@ -7,17 +7,21 @@ surf_out = './surface';
 brain_data = read_freesurfer_brain(FS_SUBJ_DIR);
 
 subj = 'kaneff01';
-hem = 'rh';
-exp = 'vis';
-contrast = 'Fa-O';
+hem = 'lh';
+exp = 'langloc';
+contrast = 'S-NW';
 
 vol_path = [PROJ_DIR filesep '..' filesep 'vols_' exp...
     filesep subj filesep 'bold' filesep exp '.sm3.all'...
     filesep contrast filesep 'sig.nii.gz'];
 
-fout = [surf_out filesep subj '.mgz'];
+parcel_path = [PROJ_DIR filesep '..' filesep 'data_analysis' ...
+    filesep 'masks' filesep 'vols' filesep subj filesep ...
+    'lang_parcels_all.mgz'];
 
-command = ['mri_vol2surf --mov ' vol_path ' --o ' fout...
+fout = [surf_out filesep subj '_' exp '_parcels.mgz'];
+
+command = ['mri_vol2surf --mov ' parcel_path ' --o ' fout...
     ' --hemi ' hem ' --regheader cvs_avg35_inMNI152 --projdist 1.2'];
 system(command);
 
@@ -30,16 +34,16 @@ thresholded(thresholded<3) = nan;
 
 figure;
 % The second parameter is the initial viewing position
-plot_mesh_brain(brain_data.inflated_right,[90 0]);
+plot_mesh_brain(brain_data.pial_left,[90 0]);
 clim([-4 1]);
 colormap gray
 
 transparency = 0.3;
 
 % Plot
-paint_mesh(thresholded,transparency);
+paint_mesh(data_surf,transparency);
 
 % Finally the colormap and range need to be changed for this "layer"
 % because they are still identical to the previous ones. 
-clim([0 20]);
+clim([0 10]);
 colormap hot
