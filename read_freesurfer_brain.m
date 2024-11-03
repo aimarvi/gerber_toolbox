@@ -1,5 +1,5 @@
 function brain_data = read_freesurfer_brain( fs_subject_dir, fs_dir )
-% adapted by Ammar Marvi (@aim) 11/01/2024
+% adapted by Ammar Marvi (@aim 11/01/2024
 % 
 % READ_FREESURFER_BRAIN encapsulates FreeSurfer's shell and Matlab
 % functions to read pial and inflated cortical surfaces into Matlab as a

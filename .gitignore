@@ -1,2 +1,5 @@
 # custom
 nohup.out
+*.asv
+
+surface/*

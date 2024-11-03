@@ -136,6 +136,7 @@ cmin=clim(1);cmax=clim(2);
         %read surface into matlab
         filename = [surf_dir filesep name '_surf_' hemi '.nii'];
 
+        % maybe MRIread() ?
         data_surf = read_gzip_nifti(filename);
         % convert to single to decrease data size:
         data_surf = single(data_surf);
