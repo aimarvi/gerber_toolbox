@@ -1,4 +1,6 @@
 function brain_data = read_freesurfer_brain( fs_subject_dir, fs_dir )
+% adapted by Ammar Marvi (@aim) 11/01/2024
+% 
 % READ_FREESURFER_BRAIN encapsulates FreeSurfer's shell and Matlab
 % functions to read pial and inflated cortical surfaces into Matlab as a
 % mesh object (after an anatomical scan has been fully processed by 
@@ -28,7 +30,7 @@ function brain_data = read_freesurfer_brain( fs_subject_dir, fs_dir )
 %
 
 % Handle optional input
-DEFAULT_FS_DIR = '/usr/local/freesurfer'; % It's recommended to change this to the FS directory on your machine.
+DEFAULT_FS_DIR = '/Applications/freesurfer/7.3.2/'; % It's recommended to change this to the FS directory on your machine.
 
 if nargin < 2 || isempty(fs_dir)
     fs_dir = DEFAULT_FS_DIR;
@@ -42,9 +44,11 @@ end
 % "mri_info" shell command. 
 fs_shell_initialize_cmd = ['export FREESURFER_HOME=' fs_dir '; source $FREESURFER_HOME/SetUpFreeSurfer.sh; '];
 [~, cmdout] = system([fs_shell_initialize_cmd 'mri_info --vox2ras ' fs_subject_dir '/mri/orig.mgz']);
-transformations.ijk2xyz = affine3d(str2num(cmdout)');
+affin = str2num(cmdout);
+transformations.ijk2xyz = affinetform3d(affin); % @aim: affine3d --> affinetform3d
 [~, cmdout] = system([fs_shell_initialize_cmd 'mri_info --vox2ras-tkr ' fs_subject_dir '/mri/orig.mgz']);
-transformations.ijk2xyz_FsMesh = affine3d(str2num(cmdout)');
+affin = str2num(cmdout);
+transformations.ijk2xyz_FsMesh = affinetform3d(affin);
 
 
 % Create output structure
