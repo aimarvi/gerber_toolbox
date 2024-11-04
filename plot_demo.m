@@ -11,19 +11,22 @@ hem = 'lh';
 exp = 'langloc';
 contrast = 'S-NW';
 
-vol_path = [PROJ_DIR filesep '..' filesep 'vols_' exp...
-    filesep subj filesep 'bold' filesep exp '.sm3.all'...
-    filesep contrast filesep 'sig.nii.gz'];
+% vol_path = [PROJ_DIR filesep '..' filesep 'vols_' exp...
+%     filesep subj filesep 'bold' filesep exp '.sm3.all'...
+%     filesep contrast filesep 'sig.nii.gz'];
+% 
+% parcel_path = [PROJ_DIR filesep '..' filesep 'data_analysis' ...
+%     filesep 'masks' filesep 'vols' filesep subj filesep ...
+%     'lang_parcels_all.mgz'];
+% fout = [surf_out filesep subj '_' exp '_parcels.mgz'];
 
-parcel_path = [PROJ_DIR filesep '..' filesep 'data_analysis' ...
-    filesep 'masks' filesep 'vols' filesep subj filesep ...
-    'lang_parcels_all.mgz'];
-
-fout = [surf_out filesep subj '_' exp '_parcels.mgz'];
+parcel_path = fullfile('data', subj, 'meta_parcel.nii');
+parcel_dat = MRIread(parcel_path).vol;
+fout = fullfile('data', subj, 'meta_surf_parcel.nii');
 
 command = ['mri_vol2surf --mov ' parcel_path ' --o ' fout...
     ' --hemi ' hem ' --regheader cvs_avg35_inMNI152 --projdist 1.2'];
-system(command);
+
 
 readin = MRIread(fout);
 data_surf = single(readin.vol);
@@ -34,7 +37,7 @@ thresholded(thresholded<3) = nan;
 
 figure;
 % The second parameter is the initial viewing position
-plot_mesh_brain(brain_data.pial_left,[90 0]);
+plot_mesh_brain(brain_data.pial_left,[-115 0]);
 clim([-4 1]);
 colormap gray
 
@@ -45,5 +48,5 @@ paint_mesh(data_surf,transparency);
 
 % Finally the colormap and range need to be changed for this "layer"
 % because they are still identical to the previous ones. 
-clim([0 10]);
+clim([0 600]);
 colormap hot
